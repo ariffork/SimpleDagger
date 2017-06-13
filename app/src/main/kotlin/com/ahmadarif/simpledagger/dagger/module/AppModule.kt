@@ -2,6 +2,8 @@ package com.ahmadarif.simpledagger.dagger.module
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import com.ahmadarif.simpledagger.App
 import dagger.Module
 import dagger.Provides
@@ -20,5 +22,11 @@ class AppModule(val app: App) {
     @Provides
     @Singleton
     fun context() : Context = app.applicationContext
+
+    @Provides
+    @Singleton
+    fun sharedPreferences(app: Application): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(app)
+    }
 
 }
