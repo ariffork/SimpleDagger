@@ -1,14 +1,13 @@
 package com.ahmadarif.simpledagger.dagger.component
 
 import android.app.Application
-import com.ahmadarif.simpledagger.activity.main.MainActivity
+import android.content.SharedPreferences
 import com.ahmadarif.simpledagger.dagger.module.ApiModule
 import com.ahmadarif.simpledagger.dagger.module.AppModule
 import com.ahmadarif.simpledagger.dagger.module.NetworkModule
+import com.ahmadarif.simpledagger.service.ApiService
 import dagger.Component
 import javax.inject.Singleton
-import android.content.SharedPreferences
-import com.ahmadarif.simpledagger.service.ApiService
 
 
 /**
