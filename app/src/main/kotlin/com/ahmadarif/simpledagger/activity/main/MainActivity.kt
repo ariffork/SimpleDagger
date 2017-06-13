@@ -51,6 +51,10 @@ class MainActivity : AppCompatActivity(), MainActivityView {
             presenter.loadMessage()
             debug("Message clicked!")
         }
+
+        btnLogLastMessage.setOnClickListener {
+            presenter.logPref()
+        }
     }
 
     override fun onDetach() {

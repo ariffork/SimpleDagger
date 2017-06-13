@@ -1,5 +1,6 @@
 package com.ahmadarif.simpledagger.dagger.component
 
+import android.app.Application
 import com.ahmadarif.simpledagger.activity.main.MainActivity
 import com.ahmadarif.simpledagger.dagger.module.ApiModule
 import com.ahmadarif.simpledagger.dagger.module.AppModule
@@ -21,6 +22,7 @@ import com.ahmadarif.simpledagger.service.ApiService
 ))
 interface AppComponent {
 
+    fun application(): Application
     fun sharedPreferences(): SharedPreferences
     fun apiServive() : ApiService
 

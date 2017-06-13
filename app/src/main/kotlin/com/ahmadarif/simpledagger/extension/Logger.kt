@@ -1,6 +1,7 @@
 package com.gambitechno.sidoi.extension
 
 import android.app.Activity
+import android.app.Application
 import android.app.Fragment
 import android.util.Log
 
@@ -12,5 +13,9 @@ fun Activity.debug(message: String) : Unit {
 }
 
 fun Fragment.debug(message: String) : Unit {
+    Log.d(this.javaClass.simpleName, message)
+}
+
+fun Application.debug(message: String): Unit {
     Log.d(this.javaClass.simpleName, message)
 }
