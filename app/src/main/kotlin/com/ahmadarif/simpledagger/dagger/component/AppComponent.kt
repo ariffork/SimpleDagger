@@ -6,6 +6,9 @@ import com.ahmadarif.simpledagger.dagger.module.AppModule
 import com.ahmadarif.simpledagger.dagger.module.NetworkModule
 import dagger.Component
 import javax.inject.Singleton
+import android.content.SharedPreferences
+import com.ahmadarif.simpledagger.service.ApiService
+
 
 /**
  * Created by ARIF on 13-Jun-17.
@@ -18,6 +21,7 @@ import javax.inject.Singleton
 ))
 interface AppComponent {
 
-    fun inject(mainActivity: MainActivity)
+    fun sharedPreferences(): SharedPreferences
+    fun apiServive() : ApiService
 
 }

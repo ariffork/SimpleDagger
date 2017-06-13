@@ -5,11 +5,12 @@ import com.ahmadarif.simpledagger.mvp.Presenter
 import com.ahmadarif.simpledagger.service.ApiService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 /**
  * Created by ARIF on 13-Jun-17.
  */
-class MainActivityPresenter(
+class MainActivityPresenter @Inject constructor(
         val api: ApiService,
         val pref: SharedPreferences
 ) : Presenter<MainActivityView> {

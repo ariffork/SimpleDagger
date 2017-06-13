@@ -1,28 +1,20 @@
 package com.ahmadarif.simpledagger.activity.main
 
 import android.app.ProgressDialog
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.ahmadarif.simpledagger.App
 import com.ahmadarif.simpledagger.R
 import com.ahmadarif.simpledagger.extension.progressDialog
 import com.ahmadarif.simpledagger.model.Response
-import com.ahmadarif.simpledagger.service.ApiService
 import com.gambitechno.sidoi.extension.debug
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
-import javax.inject.Named
 
 class MainActivity : AppCompatActivity(), MainActivityView {
 
-    lateinit var presenter: MainActivityPresenter
-
-    @Inject @Named("Authorized")
-    lateinit var api: ApiService
-
     @Inject
-    lateinit var pref: SharedPreferences
+    lateinit var presenter: MainActivityPresenter
 
     lateinit var progress: ProgressDialog
 
@@ -30,7 +22,11 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        App.component.inject(this)
+        DaggerMainActivityComponent.builder()
+                .appComponent(App.component)
+                .mainActivityModule(MainActivityModule(this))
+                .build().inject(this)
+
         onAttach()
     }
 
@@ -40,7 +36,6 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     }
 
     override fun onAttach() {
-        presenter = MainActivityPresenter(api, pref)
         presenter.onAttach(this)
 
         progress = progressDialog("Loading..")
