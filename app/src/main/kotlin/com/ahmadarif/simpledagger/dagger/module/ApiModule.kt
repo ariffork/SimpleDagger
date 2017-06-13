@@ -4,6 +4,7 @@ import com.ahmadarif.simpledagger.service.ApiService
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -15,6 +16,13 @@ class ApiModule {
     @Provides
     @Singleton
     fun apiService(retrofit: Retrofit) : ApiService {
+        return retrofit.create(ApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @Named("Authorized")
+    fun apiServiceAuth(@Named("Authorized") retrofit: Retrofit) : ApiService {
         return retrofit.create(ApiService::class.java)
     }
 

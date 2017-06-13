@@ -5,11 +5,13 @@ import com.ahmadarif.simpledagger.BuildConfig
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -46,6 +48,37 @@ class NetworkModule(val baseUrl: String) {
     @Provides
     @Singleton
     fun retrofit(client: OkHttpClient) : Retrofit {
+        return Retrofit.Builder()
+                .client(client)
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build()
+    }
+
+    @Provides
+    @Singleton
+    @Named("Authorized")
+    fun httpClientAuth(logger: HttpLoggingInterceptor, cache: Cache): OkHttpClient {
+        val builder = OkHttpClient().newBuilder()
+        builder.addInterceptor {
+            chain ->
+            val original = chain.request()
+
+            val requestBuilder = original.newBuilder().header("Authorization", "Bearer tokeninirahasia")
+
+            val request = requestBuilder.build()
+            chain.proceed(request)
+        }
+        builder.addInterceptor(logger)
+        builder.cache(cache)
+        return builder.build()
+    }
+
+    @Provides
+    @Singleton
+    @Named("Authorized")
+    fun retrofitAuth(@Named("Authorized") client: OkHttpClient) : Retrofit {
         return Retrofit.Builder()
                 .client(client)
                 .baseUrl(baseUrl)
