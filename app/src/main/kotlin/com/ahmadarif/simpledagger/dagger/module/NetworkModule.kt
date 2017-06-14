@@ -1,8 +1,11 @@
 package com.ahmadarif.simpledagger.dagger.module
 
 import android.app.Application
+import android.content.SharedPreferences
+import com.ahmadarif.simpledagger.AuthenticationInterceptor
 import com.ahmadarif.simpledagger.BuildConfig
 import com.ahmadarif.simpledagger.dagger.qualifier.Authorized
+import com.gambitechno.sidoi.extension.get
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
@@ -55,20 +58,31 @@ class NetworkModule(val baseUrl: String) {
                 .build()
     }
 
+//    @Provides
+//    @Singleton
+//    @Authorized
+//    fun httpClientAuth(logger: HttpLoggingInterceptor, cache: Cache): OkHttpClient {
+//        val builder = OkHttpClient().newBuilder()
+//        builder.addInterceptor {
+//            chain ->
+//            val original = chain.request()
+//
+//            val requestBuilder = original.newBuilder().header("Authorization", "Bearer tokeninirahasia")
+//
+//            val request = requestBuilder.build()
+//            chain.proceed(request)
+//        }
+//        builder.addInterceptor(logger)
+//        builder.cache(cache)
+//        return builder.build()
+//    }
+
     @Provides
     @Singleton
     @Authorized
-    fun httpClientAuth(logger: HttpLoggingInterceptor, cache: Cache): OkHttpClient {
+    fun httpClientAuth(logger: HttpLoggingInterceptor, cache: Cache, pref: SharedPreferences): OkHttpClient {
         val builder = OkHttpClient().newBuilder()
-        builder.addInterceptor {
-            chain ->
-            val original = chain.request()
-
-            val requestBuilder = original.newBuilder().header("Authorization", "Bearer tokeninirahasia")
-
-            val request = requestBuilder.build()
-            chain.proceed(request)
-        }
+        builder.addInterceptor(AuthenticationInterceptor(pref.get("token")))
         builder.addInterceptor(logger)
         builder.cache(cache)
         return builder.build()
