@@ -1,15 +1,10 @@
 package com.ahmadarif.simpledagger.dagger.component
 
-import android.app.Application
-import android.content.SharedPreferences
 import com.ahmadarif.simpledagger.activity.main.MainActivity
 import com.ahmadarif.simpledagger.dagger.module.ApiModule
 import com.ahmadarif.simpledagger.dagger.module.AppModule
 import com.ahmadarif.simpledagger.dagger.module.NetworkModule
-import com.ahmadarif.simpledagger.dagger.qualifier.Authorized
-import com.ahmadarif.simpledagger.service.ApiService
 import dagger.Component
-import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -25,10 +20,5 @@ import javax.inject.Singleton
 interface AppComponent {
 
     fun inject(mainActivity: MainActivity)
-
-    fun application(): Application
-    fun sharedPreferences(): SharedPreferences
-    fun apiService() : ApiService
-    @Authorized fun apiServiceAuth() : ApiService
 
 }
