@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.ahmadarif.simpledagger.dagger.module.ApiModule
 import com.ahmadarif.simpledagger.dagger.module.AppModule
 import com.ahmadarif.simpledagger.dagger.module.NetworkModule
+import com.ahmadarif.simpledagger.dagger.qualifier.Authorized
 import com.ahmadarif.simpledagger.service.ApiService
 import dagger.Component
 import javax.inject.Named
@@ -24,7 +25,7 @@ interface AppComponent {
 
     fun application(): Application
     fun sharedPreferences(): SharedPreferences
-    fun apiServive() : ApiService
-    @Named("Authorized") fun apiService() : ApiService
+    fun apiService() : ApiService
+    @Authorized fun apiServiceAuth() : ApiService
 
 }

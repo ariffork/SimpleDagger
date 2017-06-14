@@ -2,6 +2,7 @@ package com.ahmadarif.simpledagger.activity.main
 
 import android.app.Application
 import android.content.SharedPreferences
+import com.ahmadarif.simpledagger.dagger.qualifier.Authorized
 import com.ahmadarif.simpledagger.mvp.Presenter
 import com.ahmadarif.simpledagger.service.ApiService
 import com.gambitechno.sidoi.extension.debug
@@ -10,14 +11,13 @@ import com.gambitechno.sidoi.extension.save
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by ARIF on 13-Jun-17.
  */
 class MainActivityPresenter @Inject constructor(
         val app: Application,
-        @Named("Authorized") val api: ApiService,
+        @Authorized val api: ApiService,
         val pref: SharedPreferences
 ) : Presenter<MainActivityView> {
 

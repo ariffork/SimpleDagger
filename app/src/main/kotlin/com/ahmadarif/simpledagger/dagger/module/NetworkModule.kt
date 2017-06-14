@@ -2,16 +2,15 @@ package com.ahmadarif.simpledagger.dagger.module
 
 import android.app.Application
 import com.ahmadarif.simpledagger.BuildConfig
+import com.ahmadarif.simpledagger.dagger.qualifier.Authorized
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -58,7 +57,7 @@ class NetworkModule(val baseUrl: String) {
 
     @Provides
     @Singleton
-    @Named("Authorized")
+    @Authorized
     fun httpClientAuth(logger: HttpLoggingInterceptor, cache: Cache): OkHttpClient {
         val builder = OkHttpClient().newBuilder()
         builder.addInterceptor {
@@ -77,8 +76,8 @@ class NetworkModule(val baseUrl: String) {
 
     @Provides
     @Singleton
-    @Named("Authorized")
-    fun retrofitAuth(@Named("Authorized") client: OkHttpClient) : Retrofit {
+    @Authorized
+    fun retrofitAuth(@Authorized client: OkHttpClient) : Retrofit {
         return Retrofit.Builder()
                 .client(client)
                 .baseUrl(baseUrl)
