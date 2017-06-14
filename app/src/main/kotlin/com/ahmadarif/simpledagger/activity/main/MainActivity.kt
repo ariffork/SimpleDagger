@@ -50,9 +50,6 @@ class MainActivity : AppCompatActivity(), MainActivityView {
             progress.show()
             presenter.loadHello()
             debug("Hello clicked!")
-
-            pref.clear()
-            debug("token cleared!")
         }
 
         btnMessage.setOnClickListener {
@@ -61,10 +58,14 @@ class MainActivity : AppCompatActivity(), MainActivityView {
             debug("Message clicked!")
         }
 
-        btnLogLastMessage.setOnClickListener {
+        btnLogin.setOnClickListener {
             pref.save("token", "tokeninirahasia")
-            debug("token saved!")
-            presenter.logPref()
+            debug("You have been logged in!")
+        }
+
+        btnLogout.setOnClickListener {
+            pref.clear()
+            debug("You have been logged out!")
         }
     }
 
