@@ -10,13 +10,14 @@ import com.gambitechno.sidoi.extension.save
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by ARIF on 13-Jun-17.
  */
 class MainActivityPresenter @Inject constructor(
         val app: Application,
-        val api: ApiService,
+        @Named("Authorized") val api: ApiService,
         val pref: SharedPreferences
 ) : Presenter<MainActivityView> {
 

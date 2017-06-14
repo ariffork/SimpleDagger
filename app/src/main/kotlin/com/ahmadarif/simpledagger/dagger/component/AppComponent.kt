@@ -7,6 +7,7 @@ import com.ahmadarif.simpledagger.dagger.module.AppModule
 import com.ahmadarif.simpledagger.dagger.module.NetworkModule
 import com.ahmadarif.simpledagger.service.ApiService
 import dagger.Component
+import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -24,5 +25,6 @@ interface AppComponent {
     fun application(): Application
     fun sharedPreferences(): SharedPreferences
     fun apiServive() : ApiService
+    @Named("Authorized") fun apiService() : ApiService
 
 }
