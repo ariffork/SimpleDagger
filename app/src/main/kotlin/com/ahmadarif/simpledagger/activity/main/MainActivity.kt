@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.ahmadarif.simpledagger.App
 import com.ahmadarif.simpledagger.R
-import com.ahmadarif.simpledagger.dagger.component.DaggerMainActivityComponent
 import com.ahmadarif.simpledagger.extension.progressDialog
 import com.ahmadarif.simpledagger.model.Response
 import com.gambitechno.sidoi.extension.clear
@@ -29,9 +28,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        DaggerMainActivityComponent.builder()
-                .appComponent(App.component)
-                .build().inject(this)
+        App.component.inject(this)
 
         onAttach()
     }

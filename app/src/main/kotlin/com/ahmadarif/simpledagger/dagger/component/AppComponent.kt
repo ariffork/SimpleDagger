@@ -2,6 +2,7 @@ package com.ahmadarif.simpledagger.dagger.component
 
 import android.app.Application
 import android.content.SharedPreferences
+import com.ahmadarif.simpledagger.activity.main.MainActivity
 import com.ahmadarif.simpledagger.dagger.module.ApiModule
 import com.ahmadarif.simpledagger.dagger.module.AppModule
 import com.ahmadarif.simpledagger.dagger.module.NetworkModule
@@ -22,6 +23,8 @@ import javax.inject.Singleton
         ApiModule::class
 ))
 interface AppComponent {
+
+    fun inject(mainActivity: MainActivity)
 
     fun application(): Application
     fun sharedPreferences(): SharedPreferences
