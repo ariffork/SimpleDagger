@@ -15,7 +15,7 @@ class AuthInterceptor(val pref: SharedPreferences) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
 
-        if (pref.get("token") == null) chain.proceed(original)
+        if (pref.get("token") == null) return chain.proceed(original)
 
         val builder = original.newBuilder().header("Authorization", "Bearer ${pref.get("token")}")
         val request = builder.build()
