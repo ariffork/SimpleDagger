@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import com.ahmadarif.simpledagger.App
 import com.ahmadarif.simpledagger.R
 import com.ahmadarif.simpledagger.extension.progressDialog
+import com.ahmadarif.simpledagger.extension.toast
 import com.ahmadarif.simpledagger.model.Response
 import com.gambitechno.sidoi.extension.clear
 import com.gambitechno.sidoi.extension.debug
@@ -57,12 +58,12 @@ class MainActivity : AppCompatActivity(), MainActivityView {
 
         btnLogin.setOnClickListener {
             pref.save("token", "tokeninirahasia")
-            debug("You have been logged in!")
+            toast("You have been logged in!")
         }
 
         btnLogout.setOnClickListener {
             pref.clear()
-            debug("You have been logged out!")
+            toast("You have been logged out!")
         }
     }
 
@@ -77,7 +78,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
 
     override fun onLoadHelloError(data: String) {
         progress.cancel()
-        textView.text = "Error: $data"
+        textView.text = data
     }
 
     override fun onLoadMessageSuccess(data: Response) {
@@ -87,7 +88,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
 
     override fun onLoadMessageError(data: String) {
         progress.cancel()
-        textView.text = "Error: $data"
+        textView.text = data
     }
 
 }
