@@ -37,7 +37,13 @@ class MainActivityPresenter @Inject constructor(
                 .subscribe({
                     res -> view?.onLoadHelloSuccess(res)
                 }, {
-                    err -> view?.onLoadHelloError(err.localizedMessage)
+                    err ->
+                    if (err is HttpException) {
+                        val body = retrofit.errorConverter<Response>(err)
+                        view?.onLoadMessageError("Error: ${body.message}")
+                    } else {
+                        view?.onLoadMessageError(err.localizedMessage)
+                    }
                 })
     }
 
@@ -51,7 +57,7 @@ class MainActivityPresenter @Inject constructor(
                     err ->
                     if (err is HttpException) {
                         val body = retrofit.errorConverter<Response>(err)
-                        view?.onLoadMessageError(body.message)
+                        view?.onLoadMessageError("Error: ${body.message}")
                     } else {
                         view?.onLoadMessageError(err.localizedMessage)
                     }
