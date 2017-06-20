@@ -57,12 +57,6 @@ class MainActivity : AppCompatActivity(), MainActivityView {
             debug("Hello Subject clicked!")
         }
 
-//        btnMessage.setOnClickListener {
-////            progress.show()
-//            presenter.loadMessage()
-//            debug("Message clicked!")
-//        }
-
         btnLogin.setOnClickListener {
             pref.save("token", "tokeninirahasia")
             toast("You have been logged in!")
