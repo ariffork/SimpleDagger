@@ -9,6 +9,7 @@ import com.ahmadarif.simpledagger.mvp.Presenter
 import com.ahmadarif.simpledagger.service.ApiService
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.disposables.Disposables
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -31,11 +32,12 @@ class MainActivityPresenter @Inject constructor(
     var helloDisposable = Disposables.empty()
 
     val helloSubject: PublishSubject<PublishSubjectModel> = PublishSubject.create()
+    lateinit var helloSubjectDisposable: Disposable
 
     override fun onAttach(view: MainActivityView) {
         this.view = view
 
-        helloSubject.debounce(1, TimeUnit.SECONDS)
+        helloSubjectDisposable = helloSubject.debounce(1, TimeUnit.SECONDS)
                 .flatMap {
                     api.hello().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 }
@@ -53,6 +55,7 @@ class MainActivityPresenter @Inject constructor(
     }
 
     override fun onDetach() {
+        helloSubjectDisposable.dispose()
         view = null
     }
 
