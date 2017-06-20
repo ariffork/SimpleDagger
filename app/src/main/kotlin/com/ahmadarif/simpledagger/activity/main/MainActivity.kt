@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
 
     override fun onAttach() {
         presenter.onAttach(this)
+        presenter.subscribeBtnMessage(btnMessage)
 
         progress = progressDialog("Loading..")
 
@@ -50,11 +51,17 @@ class MainActivity : AppCompatActivity(), MainActivityView {
             debug("Hello clicked!")
         }
 
-        btnMessage.setOnClickListener {
+        btnHello2.setOnClickListener {
             progress.show()
-            presenter.loadMessage()
-            debug("Message clicked!")
+            presenter.loadHello2()
+            debug("Hello Subject clicked!")
         }
+
+//        btnMessage.setOnClickListener {
+////            progress.show()
+//            presenter.loadMessage()
+//            debug("Message clicked!")
+//        }
 
         btnLogin.setOnClickListener {
             pref.save("token", "tokeninirahasia")
