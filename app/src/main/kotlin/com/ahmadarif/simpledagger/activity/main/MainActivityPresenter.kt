@@ -37,8 +37,8 @@ class MainActivityPresenter @Inject constructor(
     override fun onAttach(view: MainActivityView) {
         this.view = view
 
-        helloSubjectDisposable = helloSubject.debounce(1, TimeUnit.SECONDS)
-                .flatMap {
+        helloSubjectDisposable = helloSubject
+                .switchMap {
                     api.hello().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 }
                 .subscribe({

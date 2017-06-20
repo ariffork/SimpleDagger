@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         }
 
         btnHello2.setOnClickListener {
-            progress.show()
+//            progress.show()
             presenter.loadHello2()
             debug("Hello Subject clicked!")
         }
@@ -73,22 +73,22 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     }
 
     override fun onLoadHelloSuccess(data: Response) {
-        progress.cancel()
+        progress.dismiss()
         textView.text = data.message
     }
 
     override fun onLoadHelloError(data: String) {
-        progress.cancel()
+        progress.dismiss()
         textView.text = data
     }
 
     override fun onLoadMessageSuccess(data: Response) {
-        progress.cancel()
+        progress.dismiss()
         textView.text = data.message
     }
 
     override fun onLoadMessageError(data: String) {
-        progress.cancel()
+        progress.dismiss()
         textView.text = data
     }
 
