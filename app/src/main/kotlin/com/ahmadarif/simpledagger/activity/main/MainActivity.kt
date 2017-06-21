@@ -35,8 +35,19 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     }
 
     override fun onDestroy() {
+        debug("DESTROY")
         onDetach()
         super.onDestroy()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        debug("PAUSE")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        debug("RESUME")
     }
 
     override fun onAttach() {
