@@ -61,6 +61,7 @@ class MainActivityPresenter @Inject constructor(
 
         compositeDispose.add(
                 messageSubject
+                        .debounce(2, TimeUnit.SECONDS)
                         .switchMap {
                             api.message()
                                     .subscribeOn(Schedulers.io())
