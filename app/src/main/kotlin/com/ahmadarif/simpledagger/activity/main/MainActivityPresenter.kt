@@ -31,7 +31,7 @@ class MainActivityPresenter @Inject constructor(
 
     var helloDisposable = Disposables.empty()
 
-    val helloSubject: PublishSubject<PublishSubjectModel> = PublishSubject.create()
+    val helloSubject: PublishSubject<Any> = PublishSubject.create()
     lateinit var helloSubjectDisposable: Disposable
 
     override fun onAttach(view: MainActivityView) {
@@ -82,7 +82,7 @@ class MainActivityPresenter @Inject constructor(
     }
 
     fun loadHello2() {
-        helloSubject.onNext(PublishSubjectModel())
+        helloSubject.onNext(Any())
     }
 
     fun subscribeBtnMessage(v: View) {
