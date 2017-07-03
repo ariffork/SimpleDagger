@@ -44,16 +44,18 @@ class MainActivityPresenter @Inject constructor(
                         .switchMap {
                             api.hello().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                         }
-                        .subscribe({
-                            res -> view.onLoadHelloSuccess(res)
-                        }, {
+                        .doOnError {
                             err ->
                             if (err is HttpException) {
                                 val body = retrofit.errorConverter<Response>(err)
-                                view.onLoadMessageError("Error: ${body.message}")
+                                view.onLoadHelloError("Error: ${body.message}")
                             } else {
-                                view.onLoadMessageError(err.localizedMessage)
+                                view.onLoadHelloError(err.localizedMessage)
                             }
+                        }
+                        .retry()
+                        .subscribe({
+                            res -> view.onLoadHelloSuccess(res)
                         })
         )
 
@@ -92,7 +94,9 @@ class MainActivityPresenter @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError {
+                .subscribe({
+                    res -> view?.onLoadHelloSuccess(res)
+                }, {
                     err ->
                     if (err is HttpException) {
                         val body = retrofit.errorConverter<Response>(err)
@@ -100,10 +104,6 @@ class MainActivityPresenter @Inject constructor(
                     } else {
                         view?.onLoadHelloError(err.localizedMessage)
                     }
-                }
-                .retry()
-                .subscribe({
-                    res -> view?.onLoadHelloSuccess(res)
                 })
     }
 
