@@ -1,6 +1,7 @@
 package com.ahmadarif.simpledagger.service.interceptor
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.gambitechno.sidoi.extension.get
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -14,6 +15,8 @@ class AuthInterceptor(val pref: SharedPreferences) : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
+
+        Log.d("AuthInterceptor", "NGANU")
 
         if (pref.get("token") == null) return chain.proceed(original)
 

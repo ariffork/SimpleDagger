@@ -12,7 +12,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposables
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import retrofit2.HttpException
 import retrofit2.Retrofit
@@ -39,6 +38,7 @@ class MainActivityPresenter @Inject constructor(
     override fun onAttach(view: MainActivityView) {
         this.view = view
 
+        // cannot emmit again when error (ex: HttpException)
         compositeDispose.add(
                 helloSubject
                         .switchMap {
@@ -64,9 +64,7 @@ class MainActivityPresenter @Inject constructor(
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                         }
-                        .subscribe({
-                            res -> view.onLoadMessageSuccess(res)
-                        }, {
+                        .doOnError {
                             err ->
                             if (err is HttpException) {
                                 val body = retrofit.errorConverter<Response>(err)
@@ -74,6 +72,10 @@ class MainActivityPresenter @Inject constructor(
                             } else {
                                 view.onLoadMessageError(err.localizedMessage)
                             }
+                        }
+                        .retry()
+                        .subscribe({
+                            res -> view.onLoadMessageSuccess(res)
                         })
         )
     }
@@ -90,16 +92,18 @@ class MainActivityPresenter @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    res -> view?.onLoadHelloSuccess(res)
-                }, {
+                .doOnError {
                     err ->
                     if (err is HttpException) {
                         val body = retrofit.errorConverter<Response>(err)
-                        view?.onLoadMessageError("Error: ${body.message}")
+                        view?.onLoadHelloError("Error: ${body.message}")
                     } else {
-                        view?.onLoadMessageError(err.localizedMessage)
+                        view?.onLoadHelloError(err.localizedMessage)
                     }
+                }
+                .retry()
+                .subscribe({
+                    res -> view?.onLoadHelloSuccess(res)
                 })
     }
 
@@ -115,9 +119,7 @@ class MainActivityPresenter @Inject constructor(
         RxView.clicks(v)
                 .debounce(1, TimeUnit.SECONDS)
                 .switchMap { api.message().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()) }
-                .subscribe({
-                    res -> view?.onLoadMessageSuccess(res)
-                }, {
+                .doOnError {
                     err ->
                     if (err is HttpException) {
                         val body = retrofit.errorConverter<Response>(err)
@@ -125,6 +127,10 @@ class MainActivityPresenter @Inject constructor(
                     } else {
                         view?.onLoadMessageError(err.localizedMessage)
                     }
+                }
+                .retry()
+                .subscribe({
+                    res -> view?.onLoadMessageSuccess(res)
                 })
     }
 
