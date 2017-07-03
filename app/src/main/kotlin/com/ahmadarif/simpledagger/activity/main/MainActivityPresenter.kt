@@ -9,9 +9,10 @@ import com.ahmadarif.simpledagger.mvp.Presenter
 import com.ahmadarif.simpledagger.service.ApiService
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposables
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import retrofit2.HttpException
 import retrofit2.Retrofit
@@ -31,39 +32,60 @@ class MainActivityPresenter @Inject constructor(
 
     var helloDisposable = Disposables.empty()
 
+    val compositeDispose: CompositeDisposable = CompositeDisposable()
     val helloSubject: PublishSubject<Any> = PublishSubject.create()
-    lateinit var helloSubjectDisposable: Disposable
+    val messageSubject: PublishSubject<PublishSubjectModel> = PublishSubject.create()
 
     override fun onAttach(view: MainActivityView) {
         this.view = view
 
-        helloSubjectDisposable = helloSubject
-                .switchMap {
-                    api.hello().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                }
-                .subscribe({
-                    res -> view.onLoadHelloSuccess(res)
-                }, {
-                    err ->
-                    if (err is HttpException) {
-                        val body = retrofit.errorConverter<Response>(err)
-                        view.onLoadMessageError("Error: ${body.message}")
-                    } else {
-                        view.onLoadMessageError(err.localizedMessage)
-                    }
-                })
+        compositeDispose.add(
+                helloSubject
+                        .switchMap {
+                            api.hello().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                        }
+                        .subscribe({
+                            res -> view.onLoadHelloSuccess(res)
+                        }, {
+                            err ->
+                            if (err is HttpException) {
+                                val body = retrofit.errorConverter<Response>(err)
+                                view.onLoadMessageError("Error: ${body.message}")
+                            } else {
+                                view.onLoadMessageError(err.localizedMessage)
+                            }
+                        })
+        )
+
+        compositeDispose.add(
+                messageSubject
+                        .switchMap {
+                            api.message()
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                        }
+                        .subscribe({
+                            res -> view.onLoadMessageSuccess(res)
+                        }, {
+                            err ->
+                            if (err is HttpException) {
+                                val body = retrofit.errorConverter<Response>(err)
+                                view.onLoadMessageError("Error: ${body.message}")
+                            } else {
+                                view.onLoadMessageError(err.localizedMessage)
+                            }
+                        })
+        )
     }
 
     override fun onDetach() {
-        helloSubjectDisposable.dispose()
+        helloDisposable.dispose()
+        compositeDispose.clear()
         view = null
     }
 
     fun loadHello() {
-        if (!helloDisposable.isDisposed) {
-            helloDisposable.dispose()
-        }
-
+        helloDisposable.dispose()
         helloDisposable = api.hello()
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -83,6 +105,10 @@ class MainActivityPresenter @Inject constructor(
 
     fun loadHello2() {
         helloSubject.onNext(Any())
+    }
+
+    fun loadMessage() {
+        messageSubject.onNext(PublishSubjectModel())
     }
 
     fun subscribeBtnMessage(v: View) {

@@ -57,15 +57,19 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         progress = progressDialog("Loading..")
 
         btnHello.setOnClickListener {
-            progress.show()
+//            progress.show()
             presenter.loadHello()
             debug("Hello clicked!")
         }
 
         btnHello2.setOnClickListener {
-//            progress.show()
             presenter.loadHello2()
             debug("Hello Subject clicked!")
+        }
+
+        btnMessage2.setOnClickListener {
+            presenter.loadMessage()
+            debug("Message Subject clicked!")
         }
 
         btnLogin.setOnClickListener {
