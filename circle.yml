@@ -22,7 +22,7 @@ dependencies:
         - echo y | android update sdk --no-ui --all --filter "extra-google-google_play_services"
         - mkdir -p /home/ubuntu/.android
         - touch /home/ubuntu/.android/repositories.cfg
-        - $ANDROID_HOME/tools/bin/sdkmanager --update && (while [ 1 ]; do sleep 5; echo y; done) | $ANDROID_HOME/tools/bin/sdkmanager --package_file=/sdk/packages.txt
+        - echo y | $ANDROID_HOME/tools/bin/sdkmanager --update
         - $ANDROID_HOME/tools/bin/sdkmanager --licenses
 #        - mkdir "$ANDROID_HOME/licenses" || true
 #        - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
