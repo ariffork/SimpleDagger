@@ -44,8 +44,11 @@ class MainActivityPresenter @Inject constructor(
         // cannot emmit again when error (ex: HttpException)
         compositeDispose.add(
                 helloSubject
+                        .retry()
                         .switchMap {
-                            api.hello().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                            api.hello()
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
                         }
                         .doOnError {
                             err ->
@@ -56,16 +59,16 @@ class MainActivityPresenter @Inject constructor(
                                 view.onLoadHelloError(err.localizedMessage)
                             }
                         }
-                        .retry()
-                        .subscribe({
+                        .subscribe {
                             res -> view.onLoadHelloSuccess(res)
-                        })
+                        }
         )
 
         // subject auto dispose using RxLifecycle
         messageSubject
                 .compose(view.bindToLifecycle())
                 .debounce(2, TimeUnit.SECONDS)
+                .retry()
                 .switchMap {
                     api.message()
                             .subscribeOn(Schedulers.io())
@@ -80,10 +83,9 @@ class MainActivityPresenter @Inject constructor(
                         view.onLoadMessageError(err.localizedMessage)
                     }
                 }
-                .retry()
-                .subscribe({
+                .subscribe {
                     res -> view.onLoadMessageSuccess(res)
-                })
+                }
 
         // example of using RxLifecycle
         Observable
@@ -135,6 +137,7 @@ class MainActivityPresenter @Inject constructor(
     fun subscribeBtnMessage(v: View) {
         RxView.clicks(v)
                 .debounce(1, TimeUnit.SECONDS)
+                .retry()
                 .switchMap { api.message().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()) }
                 .doOnError {
                     err ->
@@ -145,10 +148,9 @@ class MainActivityPresenter @Inject constructor(
                         view?.onLoadMessageError(err.localizedMessage)
                     }
                 }
-                .retry()
-                .subscribe({
+                .subscribe {
                     res -> view?.onLoadMessageSuccess(res)
-                })
+                }
     }
 
 }
