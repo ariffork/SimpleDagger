@@ -8,6 +8,9 @@ import com.ahmadarif.simpledagger.model.Response
 import com.ahmadarif.simpledagger.mvp.Presenter
 import com.ahmadarif.simpledagger.service.ApiService
 import com.jakewharton.rxbinding2.view.RxView
+import com.trello.rxlifecycle2.RxLifecycle
+import com.trello.rxlifecycle2.android.ActivityEvent
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposables
@@ -59,28 +62,41 @@ class MainActivityPresenter @Inject constructor(
                         })
         )
 
-        compositeDispose.add(
-                messageSubject
-                        .debounce(2, TimeUnit.SECONDS)
-                        .switchMap {
-                            api.message()
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                        }
-                        .doOnError {
-                            err ->
-                            if (err is HttpException) {
-                                val body = retrofit.errorConverter<Response>(err)
-                                view.onLoadMessageError("Error: ${body.message}")
-                            } else {
-                                view.onLoadMessageError(err.localizedMessage)
-                            }
-                        }
-                        .retry()
-                        .subscribe({
-                            res -> view.onLoadMessageSuccess(res)
-                        })
-        )
+        // subject auto dispose using RxLifecycle
+        messageSubject
+                .compose(view.bindToLifecycle())
+                .debounce(2, TimeUnit.SECONDS)
+                .switchMap {
+                    api.message()
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                }
+                .doOnError {
+                    err ->
+                    if (err is HttpException) {
+                        val body = retrofit.errorConverter<Response>(err)
+                        view.onLoadMessageError("Error: ${body.message}")
+                    } else {
+                        view.onLoadMessageError(err.localizedMessage)
+                    }
+                }
+                .retry()
+                .subscribe({
+                    res -> view.onLoadMessageSuccess(res)
+                })
+
+        // example of using RxLifecycle
+        Observable
+                .interval(1, TimeUnit.SECONDS)
+//                .compose(view.bindToLifecycle()) // ex1
+                .compose(RxLifecycle.bindUntilEvent(view.lifecycle(), ActivityEvent.PAUSE)) // ex2
+                .subscribe({
+                    onNext -> println("onNext -> $onNext")
+                }, {
+                    onError -> println("onError -> " + onError.message)
+                }, {
+                    println("onCompleted")
+                })
     }
 
     override fun onDetach() {

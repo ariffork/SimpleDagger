@@ -3,7 +3,6 @@ package com.ahmadarif.simpledagger.activity.main
 import android.app.ProgressDialog
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import com.ahmadarif.simpledagger.App
 import com.ahmadarif.simpledagger.R
 import com.ahmadarif.simpledagger.extension.progressDialog
@@ -12,10 +11,11 @@ import com.ahmadarif.simpledagger.model.Response
 import com.gambitechno.sidoi.extension.clear
 import com.gambitechno.sidoi.extension.debug
 import com.gambitechno.sidoi.extension.save
+import com.trello.rxlifecycle2.components.RxActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), MainActivityView {
+class MainActivity : RxActivity(), MainActivityView {
 
     @Inject
     lateinit var presenter: MainActivityPresenter
@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     lateinit var pref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        debug("CREATE")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
